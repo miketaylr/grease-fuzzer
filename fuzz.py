@@ -22,6 +22,8 @@ from time import sleep
 import requests
 from tranco import Tranco
 
+import argparse
+
 greasey_chars = "_ ( ) ; ? = - : . /"
 greasey_list = greasey_chars.split(' ')
 
@@ -33,8 +35,14 @@ headers = {
 t = Tranco(cache=True, cache_dir='.tranco')
 tranco_list = t.list()
 
-# If anyone cares to make this number commandline configurable, be my guest.
-for site in tranco_list.top(1000):
+parser = argparse.ArgumentParser()
+parser.add_argument("-n", "--top_n_sites",
+                     help="The top N sites, as listed by Tranco",
+                     default=1000, type=int)
+args = parser.parse_args()
+
+print(f'running on top {args.top_n_sites} sites')
+for site in tranco_list.top(args.top_n_sites):
   for candidate in greasey_list:
       greasey_header = f'{candidate}Not{choice(greasey_list)}A{choice(greasey_list)}Brand'
       headers.update({'Sec-CH-UA': greasey_header})
